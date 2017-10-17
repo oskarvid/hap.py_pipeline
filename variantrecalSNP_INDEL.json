@@ -1,0 +1,13 @@
+{
+  "VarRecAppRecHap.gatk3": "/home/oskarv/01-workspace/02-tools/GenomeAnalysisTK-3.8.jar",
+  "VarRecAppRecHap.SnpInput": "/home/oskarv/01-workspace/00-temp/hap.py-pipeline/data/test.vcf",
+  "VarRecAppRecHap.SnpInputIndex": "/home/oskarv/01-workspace/00-temp/hap.py-pipeline/data/test.vcf.idx",
+  "VarRecAppRecHap.IndelInput": "/home/oskarv/01-workspace/00-temp/hap.py-pipeline/data/test.vcf",
+  "VarRecAppRecHap.IndelInputIndex": "/home/oskarv/01-workspace/00-temp/hap.py-pipeline/data/test.vcf.idx",
+  "VarRecAppRecHap.BedFile": "/home/oskarv/01-workspace/01-data/references/hg19/HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_nosomaticdel.bed",
+  "VarRecAppRecHap.ref_fasta": "/home/oskarv/01-workspace/01-data/references/hg19/human_g1k_v37_decoy.fasta",
+  "VarRecAppRecHap.ref_fasta_index": "/home/oskarv/01-workspace/01-data/references/hg19/human_g1k_v37_decoy.fasta.fai",
+  "VarRecAppRecHap.ref_sdf_fasta": "/home/oskarv/01-workspace/01-data/references/hg19/human_g1k_v37_decoy.sdf",
+  "VarRecAppRecHap.GoldStandardSNP": "/home/oskarv/01-workspace/01-data/references/hg19/GIAB-hg19-NA12878-pure-SNP-v.3.3.2.vcf.gz",
+  "VarRecAppRecHap.GoldStandardINDEL": "/home/oskarv/01-workspace/01-data/references/hg19/GIAB-hg19-NA12878-pure-INDEL-v.3.3.2.vcf.gz"
+}
