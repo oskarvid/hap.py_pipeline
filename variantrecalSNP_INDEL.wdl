@@ -1,105 +1,62 @@
 workflow VarRecAppRecHap {
 
 # Input files
-  File SnpInput
-  File IndelInput
-  File SnpInputIndex
-  File IndelInputIndex
+  File BedFile
+  Array[File] Input
+  Array[File] InputIndex
 
 # Hap.py reference files
   File ref_fasta
   File ref_fasta_index
   File ref_sdf_fasta
-  File GoldStandardSNP
-  File GoldStandardINDEL
+  File GoldStandard
 
-  call SelectVariants as SelVarSNP {
-    input:
-      Input_Vcf = SnpInput,
-      Mode = "INDEL",
-      Output_Vcf_Name = "selectVar.applyRec.SNP",
-  }
-
-  call SelectVariants as SelVarINDEL {
-    input:
-      Input_Vcf = IndelInput,
-      Mode = "SNP",
-      Output_Vcf_Name = "selectVar.applyRec.INDEL",
-  }
-  call happy as happySNP {
-    input:
-      ref_sdf_fasta = ref_sdf_fasta,
-      ref_fasta = ref_fasta,
-      ref_fasta_index = ref_fasta_index,
-      GoldStandard = GoldStandardSNP,
-      Input_Vcf = SelVarSNP.selVar,
-      Output_Vcf_Name = "hap.py.selectVar.applyRec.SNP"
-  }
-
-  call happy as happyINDEL {
-    input:
-      ref_sdf_fasta = ref_sdf_fasta,
-      ref_fasta = ref_fasta,
-      ref_fasta_index = ref_fasta_index,
-      GoldStandard = GoldStandardINDEL,
-      Input_Vcf = SelVarINDEL.selVar,
-      Output_Vcf_Name = "hap.py.selectVar.applyRec.INDEL"
+  scatter (Input_Vcf in Input) {
+    call happy {
+      input:
+        ref_fasta = ref_fasta,
+        ref_fasta_index = ref_fasta_index,
+        ref_sdf_fasta = ref_sdf_fasta,
+        Bed_File = BedFile,
+        InputVcf = Input_Vcf,
+        GoldStandard = GoldStandard,
+        Output_Vcf_Name = "hap.py."
+    }
   }
 }
-
-  task SelectVariants {
-    File Input_Vcf
-    String Mode
-    String Output_Vcf_Name
-
-    command {
-      gatk-launch \
-      SelectVariants \
-      --variant ${Input_Vcf} \
-      -O ${Output_Vcf_Name}.vcf \
-      --selectTypeToExclude ${Mode}
-    }
-    output {
-      File selVar = "${Output_Vcf_Name}.vcf"
-      File selVarIndex = "${Output_Vcf_Name}.vcf.idx"
-    }
-  }
-
   task happy {
     File ref_fasta
     File ref_fasta_index
     File ref_sdf_fasta
     File GoldStandard
-    File Input_Vcf
+    File InputVcf
+    File Bed_File
     String Output_Vcf_Name
 
     command {
       /opt/hap.py/bin/hap.py \
-      --threads 16 \
+      --threads 4 \
       --engine-vcfeval-template ${ref_sdf_fasta} \
       -r ${ref_fasta} \
       ${GoldStandard} \
-      ${Input_Vcf} \
+      ${InputVcf} \
       -o ${Output_Vcf_Name} \
-      --pass-only \
-      -V \
-      --roc GQX \
-      --engine vcfeval \
+      -f ${Bed_File} \
       --verbose
     }
     output {
-      File happyextended = "${Output_Vcf_Name}.extended.csv"
-      File happymetrics = "${Output_Vcf_Name}.metrics.json.gz"
-      File happyall = "${Output_Vcf_Name}.roc.all.csv.gz"
-      File happyroclocind = "${Output_Vcf_Name}.roc.Locations.INDEL.csv.gz"
       File happyrocindpass = "${Output_Vcf_Name}.roc.Locations.INDEL.PASS.csv.gz"
-      File happyroclocsnp = "${Output_Vcf_Name}.roc.Locations.SNP.csv.gz"
       File happyrocsnppass = "${Output_Vcf_Name}.roc.Locations.SNP.PASS.csv.gz"
-      File happyroc = "${Output_Vcf_Name}.roc.tsv"
+      File happyroclocind = "${Output_Vcf_Name}.roc.Locations.INDEL.csv.gz"
+      File happyroclocsnp = "${Output_Vcf_Name}.roc.Locations.SNP.csv.gz"
+      File happymetrics = "${Output_Vcf_Name}.metrics.json.gz"
+      File happyextended = "${Output_Vcf_Name}.extended.csv"
       File happyruninfo = "${Output_Vcf_Name}.runinfo.json"
       File happysummary = "${Output_Vcf_Name}.summary.csv"
-      File happyvcf = "${Output_Vcf_Name}.vcf.gz"
       File happyvcfindex = "${Output_Vcf_Name}.vcf.gz.tbi"
+      File happyall = "${Output_Vcf_Name}.roc.all.csv.gz"
+      File happyroc = "${Output_Vcf_Name}.roc.tsv"
+      File happyvcf = "${Output_Vcf_Name}.vcf.gz"
     }
     runtime {
       docker: "pkrusche/hap.py"
