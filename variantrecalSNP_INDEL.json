@@ -1,5 +1,4 @@
 {
-  "VarRecAppRecHap.gatk3": "/home/oskar/01-workspace/02-tools/GenomeAnalysisTK-3.8.jar",
   "VarRecAppRecHap.Input": [
     "/home/oskar/01-workspace/00-temp/hap.py_pipeline/data/test.vcf.gz",
     "/home/oskar/01-workspace/00-temp/hap.py_pipeline/data/test.vcf.gz"
